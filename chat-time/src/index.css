@@ -131,7 +131,7 @@ border-radius: 10px 10px 10px 10px;
 border:1px solid var(--borderColor1);
 }
 
-#message--form{
+#message-form{
 display: flex;
 flex-direction: column;
 gap: 0.5em;
@@ -177,14 +177,14 @@ margin-left: 1em;
 color: rgb(164, 161, 161);
 }
 
-.delete--btn{
+.delete-btn{
 color:#8db3dd;
 cursor: pointer;
 transition: 0.3s;
 width: 16px;
 }
 
-.delete--btn:hover{
+.delete-btn:hover{
 color:red;
 }
 
