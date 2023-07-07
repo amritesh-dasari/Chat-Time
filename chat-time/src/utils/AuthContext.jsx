@@ -1,6 +1,8 @@
 import { useContext, createContext, useState, useEffect } from "react";
 import { account } from "../appwriteConfig";
 import { useNavigate } from "react-router-dom";
+import { ID } from "appwrite";
+
 const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
@@ -10,40 +12,63 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         getUserOnLoad()
-    })
+    }, [])
 
     const getUserOnLoad = async () => {
         try {
-            const accountDetails = await account.get();
+            let accountDetails = await account.get();
             setUser(accountDetails)
         } catch (error) {
-            console.error(error)
+            console.warn(error)
         }
         setLoading(false)
     }
     const handleUserLogin = async (e, credentials) => {
         e.preventDefault()
         try {
-            const response = await account.createEmailSession(credentials.email, credentials.password);
+            let response = await account.createEmailSession(credentials.email, credentials.password);
             console.log('LOGGED IN:', response)
-            const accountDetails = await account.get();
+            let accountDetails = await account.get();
             setUser(accountDetails)
             navigate('/')
 
+        } catch (error) {
+            console.warn(error)
+        }
+    }
+
+    const handleUserLogout = async () => {
+        const response = await account.deleteSession('current');
+        setUser(null)
+    }
+
+    const handleUserRegister = async (e, credentials) => {
+        e.preventDefault()
+        if (credentials.password1 !== credentials.password2) {
+            alert('Passwords do not match!')
+            return
+        }
+        try {
+            let response = await account.create(
+                ID.unique(),
+                credentials.email,
+                credentials.password1,
+                credentials.name
+            )
+            await account.createEmailSession(credentials.email, credentials.password1)
+            let accountDetails = await account.get();
+            setUser(accountDetails)
+            navigate('/')
         } catch (error) {
             console.error(error)
         }
     }
 
-    const handleUserLogout = async () => {
-        await account.deleteSession('current')
-        setUser(null)
-    }
-
     const contextData = {
         user,
         handleUserLogin,
-        handleUserLogout
+        handleUserLogout,
+        handleUserRegister
     }
 
     return <AuthContext.Provider value={contextData}>

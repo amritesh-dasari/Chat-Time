@@ -1,18 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useAuth } from '../utils/AuthContext'
-import { useNavigate, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
-const Loginpage = () => {
-    const { user, handleUserLogin } = useAuth()
-    const navigate = useNavigate()
+const RegisterPage = () => {
+    const { handleUserRegister } = useAuth()
+
     const [credentials, setCredentials] = useState({
+        name: '',
         email: '',
-        password: ''
-    })
-    useEffect(() => {
-        if (user) {
-            navigate('/')
-        }
+        password1: '',
+        password2: ''
     })
 
     const handleInputChange = (e) => {
@@ -23,7 +20,18 @@ const Loginpage = () => {
     return (
         <div className='auth--container'>
             <div className='form--wrapper'>
-                <form onSubmit={(e) => { handleUserLogin(e, credentials) }}>
+                <form onSubmit={(e) => { handleUserRegister(e, credentials) }}>
+                    <div className='field--wrapper'>
+                        <label>Name: </label>
+                        <input
+                            type="text"
+                            required
+                            name="name"
+                            placeholder='Enter your name'
+                            value={credentials.name}
+                            onChange={handleInputChange}
+                        />
+                    </div>
                     <div className='field--wrapper'>
                         <label>Email: </label>
                         <input
@@ -40,9 +48,20 @@ const Loginpage = () => {
                         <input
                             type="password"
                             required
-                            name="password"
+                            name="password1"
                             placeholder='Enter password'
-                            value={credentials.password}
+                            value={credentials.password1}
+                            onChange={handleInputChange}
+                        />
+                    </div>
+                    <div className='field--wrapper'>
+                        <label>Reenter Password: </label>
+                        <input
+                            type="password"
+                            required
+                            name="password2"
+                            placeholder='Enter password again'
+                            value={credentials.password2}
                             onChange={handleInputChange}
                         />
                     </div>
@@ -50,10 +69,10 @@ const Loginpage = () => {
                         <input className="btn btn--lg btn--main" type="submit" value="Login" />
                     </div>
                 </form>
-                <p>Don't have an account? <Link to="/register">Register here</Link></p>
+                <p>Already have an account? <Link to="/login">Login page</Link></p>
             </div>
         </div>
     )
 }
 
-export default Loginpage
+export default RegisterPage
